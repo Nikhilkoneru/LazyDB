@@ -13,6 +13,25 @@ from django.views.decorators.csrf import csrf_exempt
 from cloudbackend import settings
 import os
 from django.http import HttpResponse, Http404
+
+def index(request):
+    if request.method == "POST":
+        try:
+            body_unicode = request.body.decode('utf-8')
+            body = json.loads(body_unicode)
+            email = body["email"]
+            url = body["url"]
+            db = body["db"]
+            #daimond check this out  -> no need to call create on form submit method I added one more parameter to save_and_export if the type is html it will return html
+            return save_and_export(email, url, db, "html")
+        except Exception as e:
+            return HttpResponse("error page")
+    # daimond check this out  -> else part is get request
+    else:
+        # daimond check this out  -> you need to render html form page here :-) and set onaction to the same index url no need to set it to create
+        # when you do post it will go to the post thing and ask save_and_export to return html response
+        return HttpResponse("show form page here")
+
 @csrf_exempt
 def download(request):
     if request.method == "GET":
@@ -35,15 +54,16 @@ def create(request):
             email = body["email"]
             url = body["url"]
             db = body["db"]
-            response = save_and_export(email, url, db)
+            # daimond check this out -> I added one more parameter to save_and_export if it is json it will return json else html page.
+            response = save_and_export(email, url, db, "json")
             return response
         except Exception as e:
             return JsonResponse({"status": 400, "message": e})
     else:
         return JsonResponse({"status": 400, "message": "Use Post Request"})
 
-
-def save_and_export(email, url, database):
+#daimond check this out -> one more parameter return type
+def save_and_export(email, url, database, returntype):
     dbname = "".join(" ".join(re.findall("[a-zA-Z]+", email.split("@")[0])).split())
     createDB(dbname)
     connectDBtoDjango(dbname)
@@ -53,10 +73,21 @@ def save_and_export(email, url, database):
             create_and_save_table(dbname, url, database, table)
         exportDB(dbname, tables)
         deleteDB(dbname)
-        return JsonResponse({"status": 200, "dblink": "http://127.0.0.1:8000/dbcreater/download/" + dbname + ".sql"})
+        # daimond check this out
+        if returntype == "json":
+            return JsonResponse({"status": 200, "dblink": "http://127.0.0.1:8000/dbcreater/download/" + dbname + ".sql"})
+        else:
+            return HttpResponse("when user submits form -> this is the page you can show using above link")
     except Exception as e:
         deleteDB(dbname)
-        return JsonResponse({"status": 400, "message": e})
+        #daimond check this out
+        if returntype == "json":
+            return JsonResponse({"status": 400, "message": e})
+        else:
+            #you can render html error page
+            return HttpResponse("you can create error page and render it")
+
+
 
 
 def create_and_save_table(dbname, url, database, csv_df):
