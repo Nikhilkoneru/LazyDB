@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1>Enter Below:</h1>
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'dbcreater:index' %}" method="post">
+{% csrf_token %}
+    <label for="useremail">Please enter your email:</label>
+    <input type="email" name="email" id="ueremail" value=""><br><br>
+    <label for="givenurl">Enter input database url:</label>
+    <input type="url" name="url" id="givenurl" value=""><br><br>
+    <input type="radio" name="typedb" value="mysql">MySQL<br>
+    <input type="radio" name="typedb" value="postgresql">PostgreSQL<br><br>
+
+    <input type="submit" value="Get my transformed database">
+</form>
+
+</body>
+</html>
