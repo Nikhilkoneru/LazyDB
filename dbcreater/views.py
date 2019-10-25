@@ -112,7 +112,6 @@ def save_and_export(email, url, database, returntype):
 
 
 
-
 def create_and_save_table(dbname, url, database, csv_df):
     columns = csv_df.columns
     dataTypes = csv_df.dtypes
