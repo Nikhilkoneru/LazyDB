@@ -33,18 +33,17 @@ except mysql.connector.errors as error:
     mysql_status = False
     print("Connection to MySQL failed: {}".format(error))
 
+
 def index(request):
-    template = loader.get_template('dbcreater/index.html')
     if request.method == "POST":
         try:
             body_unicode = request.body.decode('utf-8')
             body = json.loads(body_unicode)
-            print(body)
             email = body["email"]
             url = body["url"]
             db = body["db"]
             #daimond check this out  -> no need to call create on form submit method I added one more parameter to save_and_export if the type is html it will return html
-            #return save_and_export(email, url, db, "html")
+            return save_and_export(email, url, db, "html")
         except Exception as e:
             return HttpResponse("error page")
     # daimond check this out  -> else part is get request
@@ -54,7 +53,7 @@ def index(request):
         #return HttpResponse("show form page here")
         context = {
         }
-        return HttpResponse(template.render(context, request))
+        return HttpResponse("show form page here")
 
 @csrf_exempt
 def download(request):

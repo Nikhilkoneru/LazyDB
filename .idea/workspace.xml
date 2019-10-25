@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e9862a45-a99a-47fc-a85d-c04526d33acf" name="Default Changelist" comment="" />
+    <list default="true" id="e9862a45-a99a-47fc-a85d-c04526d33acf" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbcreater/edbs/nikhilkoneru.sql" beforeDir="false" afterPath="$PROJECT_DIR$/dbcreater/edbs/nikhilkoneru.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbcreater/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/dbcreater/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbcreater/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/dbcreater/views.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,9 +28,13 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1S9TutC7hfHmXYJOYBK4JpSV5Rn" />
+<<<<<<< HEAD
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
+=======
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+>>>>>>> 7177105342157df67d0667981d6d0a08af3dbd89
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
@@ -85,18 +94,27 @@
       <updated>1570975037814</updated>
       <workItem from="1570975067229" duration="34318000" />
       <workItem from="1571058360865" duration="1144000" />
+<<<<<<< HEAD
       <workItem from="1571345782905" duration="913000" />
       <workItem from="1571346941981" duration="3585000" />
       <workItem from="1571351733353" duration="22214000" />
+=======
+      <workItem from="1571253809019" duration="232000" />
+      <workItem from="1571340757576" duration="4844000" />
+      <workItem from="1571879965770" duration="519000" />
+>>>>>>> 7177105342157df67d0667981d6d0a08af3dbd89
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+<<<<<<< HEAD
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName="requirements.txt" />
   </component>
+=======
+>>>>>>> 7177105342157df67d0667981d6d0a08af3dbd89
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
@@ -110,7 +128,10 @@
       </map>
     </option>
   </component>
+<<<<<<< HEAD
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
+=======
+>>>>>>> 7177105342157df67d0667981d6d0a08af3dbd89
 </project>
