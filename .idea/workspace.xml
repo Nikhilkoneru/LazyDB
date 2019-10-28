@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e9862a45-a99a-47fc-a85d-c04526d33acf" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloudbackend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/cloudbackend/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbcreater/edbs/nikhilkoneru.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbcreater/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/dbcreater/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbcreater/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/dbcreater/views.py" afterDir="false" />
-    </list>
+    <list default="true" id="e9862a45-a99a-47fc-a85d-c04526d33acf" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +83,7 @@
       <workItem from="1571340757576" duration="4844000" />
       <workItem from="1571879965770" duration="6238000" />
       <workItem from="1572036786416" duration="1747000" />
-      <workItem from="1572235159397" duration="110000" />
+      <workItem from="1572235159397" duration="381000" />
     </task>
     <servers />
   </component>
