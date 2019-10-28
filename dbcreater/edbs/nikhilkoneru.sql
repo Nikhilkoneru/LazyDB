@@ -291,7 +291,7 @@ CREATE TABLE `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -300,7 +300,7 @@ CREATE TABLE `django_migrations` (
 
 LOCK TABLES `django_migrations` WRITE;
 /*!40000 ALTER TABLE `django_migrations` DISABLE KEYS */;
-INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2019-10-17 22:59:44.306344'),(2,'auth','0001_initial','2019-10-17 22:59:44.752282'),(3,'admin','0001_initial','2019-10-17 22:59:45.998805'),(4,'admin','0002_logentry_remove_auto_add','2019-10-17 22:59:46.186168'),(5,'admin','0003_logentry_add_action_flag_choices','2019-10-17 22:59:46.201528'),(6,'contenttypes','0002_remove_content_type_name','2019-10-17 22:59:46.312929'),(7,'auth','0002_alter_permission_name_max_length','2019-10-17 22:59:46.397926'),(8,'auth','0003_alter_user_email_max_length','2019-10-17 22:59:46.457098'),(9,'auth','0004_alter_user_username_opts','2019-10-17 22:59:46.482595'),(10,'auth','0005_alter_user_last_login_null','2019-10-17 22:59:46.549783'),(11,'auth','0006_require_contenttypes_0002','2019-10-17 22:59:46.555437'),(12,'auth','0007_alter_validators_add_error_messages','2019-10-17 22:59:46.585118'),(13,'auth','0008_alter_user_username_max_length','2019-10-17 22:59:46.664306'),(14,'auth','0009_alter_user_last_name_max_length','2019-10-17 22:59:46.746344'),(15,'auth','0010_alter_group_name_max_length','2019-10-17 22:59:46.817318'),(16,'auth','0011_update_proxy_permissions','2019-10-17 22:59:46.844980'),(17,'dbcreater','0001_nikhilkoneru','2019-10-17 22:59:46.905734'),(18,'sessions','0001_initial','2019-10-17 22:59:47.004394');
+INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2019-10-25 20:54:55.439540'),(2,'auth','0001_initial','2019-10-25 20:54:55.661885'),(3,'admin','0001_initial','2019-10-25 20:54:56.137420'),(4,'admin','0002_logentry_remove_auto_add','2019-10-25 20:54:56.225164'),(5,'admin','0003_logentry_add_action_flag_choices','2019-10-25 20:54:56.239868'),(6,'contenttypes','0002_remove_content_type_name','2019-10-25 20:54:56.336945'),(7,'auth','0002_alter_permission_name_max_length','2019-10-25 20:54:56.375976'),(8,'auth','0003_alter_user_email_max_length','2019-10-25 20:54:56.426956'),(9,'auth','0004_alter_user_username_opts','2019-10-25 20:54:56.441523'),(10,'auth','0005_alter_user_last_login_null','2019-10-25 20:54:56.489991'),(11,'auth','0006_require_contenttypes_0002','2019-10-25 20:54:56.493038'),(12,'auth','0007_alter_validators_add_error_messages','2019-10-25 20:54:56.507791'),(13,'auth','0008_alter_user_username_max_length','2019-10-25 20:54:56.606781'),(14,'auth','0009_alter_user_last_name_max_length','2019-10-25 20:54:56.661527'),(15,'auth','0010_alter_group_name_max_length','2019-10-25 20:54:56.709418'),(16,'auth','0011_update_proxy_permissions','2019-10-25 20:54:56.725189'),(17,'dbcreater','0001_nikhilkoneru','2019-10-25 20:54:56.764932'),(18,'dbcreater','0002_nikhilkoneru','2019-10-25 20:54:56.812124'),(19,'dbcreater','0003_nikhilkoneru','2019-10-25 20:54:56.865281'),(20,'sessions','0001_initial','2019-10-25 20:54:56.900670');
 /*!40000 ALTER TABLE `django_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -338,4 +338,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-10-17 22:59:49
+-- Dump completed on 2019-10-25 20:55:00

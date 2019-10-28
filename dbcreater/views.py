@@ -14,9 +14,24 @@ from cloudbackend import settings
 import os
 from django.http import HttpResponse, Http404
 
+@csrf_exempt
+def assistant_hook(request):
+    req = json.loads(request.body)
+    # get action from json
+    action = req.get('queryResult').get('action')
+    if action=="favcolor":
+
+        fulfillmentText = {"status": 200, "fulfillmentText": "Oh my god vaidehi is testing"}
+    else:
+        fulfillmentText = {"status": 200, "fulfillmentText": "Sorry can you try again?"}
+    # return response
+    return JsonResponse(fulfillmentText, safe=False)
+
+@csrf_exempt
 def index(request):
     if request.method == "POST":
         try:
+
             body_unicode = request.body.decode('utf-8')
             body = json.loads(body_unicode)
             email = body["email"]
@@ -29,7 +44,7 @@ def index(request):
     # daimond check this out  -> else part is get request
     else:
         # daimond check this out  -> you need to render html form page here :-) and set onaction to the same index url no need to set it to create
-        # when you do post it will go to the post thing and ask save_and_export to return html response
+        # when you do post it will go to the post thing and ask save_and_export to return html response.
         return HttpResponse("show form page here")
 
 @csrf_exempt
@@ -49,6 +64,7 @@ def download(request):
 def create(request):
     if request.method == "POST":
         try:
+            print(request.method)
             body_unicode = request.body.decode('utf-8')
             body = json.loads(body_unicode)
             email = body["email"]
@@ -64,6 +80,7 @@ def create(request):
 
 #daimond check this out -> one more parameter return type
 def save_and_export(email, url, database, returntype):
+    print("saving")
     dbname = "".join(" ".join(re.findall("[a-zA-Z]+", email.split("@")[0])).split())
     createDB(dbname)
     connectDBtoDjango(dbname)
@@ -75,7 +92,7 @@ def save_and_export(email, url, database, returntype):
         deleteDB(dbname)
         # daimond check this out
         if returntype == "json":
-            return JsonResponse({"status": 200, "dblink": "http://127.0.0.1:8000/dbcreater/download/" + dbname + ".sql"})
+            return JsonResponse({"status": 200, "dblink": "http://127.0.0.1:8000/dbcreater/download?db=" + dbname + ".sql"})
         else:
             return HttpResponse("when user submits form -> this is the page you can show using above link")
     except Exception as e:
