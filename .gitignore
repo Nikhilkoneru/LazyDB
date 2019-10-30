@@ -1,5 +1,8 @@
+!__init__.py
+!README.txt
 venv/
 .idea/
 .DS_Store
 **/__pycache__/
 __pycache__/
+dbcreater/migrations/*
