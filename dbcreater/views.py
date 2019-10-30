@@ -16,16 +16,21 @@ from django.http import HttpResponse, Http404
 
 @csrf_exempt
 def assistant_hook(request):
-    req = json.loads(request.body)
-    # get action from json
-    action = req.get('queryResult').get('action')
-    if action=="favcolor":
-
-        fulfillmentText = {"status": 200, "fulfillmentText": "Oh my god vaidehi is testing"}
+    if request.method == "POST":
+        req = json.loads(request.body.decode('utf-8'))
+        action = req.get('queryResult').get('action')
+        parameters = req.get('queryResult').get('parameters')
+        if action=="CreateDB":
+            email = parameters["email"]
+            url = parameters["url"]
+            db = parameters["db"]
+            output = json.loads(save_and_export(email,url,db,"json").content)
+            fulfillmentText = {"status": 200, "fulfillmentText": "[url]"+output["output"]}
+        else:
+            fulfillmentText = {"status": 200, "fulfillmentText": "Sorry can you try again?"}
+        return JsonResponse(fulfillmentText, safe=False)
     else:
-        fulfillmentText = {"status": 200, "fulfillmentText": "Sorry can you try again?"}
-    # return response
-    return JsonResponse(fulfillmentText, safe=False)
+        return HttpResponse("Wrong Request Type")
 
 @csrf_exempt
 def index(request):
@@ -80,7 +85,6 @@ def create(request):
 
 #daimond check this out -> one more parameter return type
 def save_and_export(email, url, database, returntype):
-    print("saving")
     dbname = "".join(" ".join(re.findall("[a-zA-Z]+", email.split("@")[0])).split())
     createDB(dbname)
     connectDBtoDjango(dbname)
@@ -92,14 +96,14 @@ def save_and_export(email, url, database, returntype):
         deleteDB(dbname)
         # daimond check this out
         if returntype == "json":
-            return JsonResponse({"status": 200, "dblink": "http://127.0.0.1:8000/dbcreater/download?db=" + dbname + ".sql"})
+            return JsonResponse({"status": 200, "output": "http://127.0.0.1:8000/dbcreater/download?db=" + dbname + ".sql"})
         else:
             return HttpResponse("when user submits form -> this is the page you can show using above link")
     except Exception as e:
         deleteDB(dbname)
         #daimond check this out
         if returntype == "json":
-            return JsonResponse({"status": 400, "message": e})
+            return JsonResponse({"status": 400, "output": "Unable to fullfill your request"})
         else:
             #you can render html error page
             return HttpResponse("you can create error page and render it")
