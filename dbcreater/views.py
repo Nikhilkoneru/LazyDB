@@ -18,18 +18,21 @@ from django.http import HttpResponse, Http404
 @csrf_exempt
 def assistant_hook(request):
     if request.method == "POST":
-        req = json.loads(request.body.decode('utf-8'))
-        action = req.get('queryResult').get('action')
-        parameters = req.get('queryResult').get('parameters')
-        if action == "CreateDB":
-            email = parameters["email"]
-            url = parameters["url"]
-            db = parameters["db"]
-            output = json.loads(save_and_export(email, url, db, "json").content)
-            fulfillmentText = {"status": 200, "fulfillmentText": "[url]" + output["output"]}
-        else:
-            fulfillmentText = {"status": 200, "fulfillmentText": "Sorry can you try again?"}
-        return JsonResponse(fulfillmentText, safe=False)
+        try:
+            req = json.loads(request.body.decode('utf-8'))
+            action = req.get('queryResult').get('action')
+            parameters = req.get('queryResult').get('parameters')
+            if action == "CreateDB":
+                email = parameters["email"]
+                url = parameters["url"]
+                db = parameters["db"]
+                output = json.loads(save_and_export(email, url, db, "json").content)
+                fulfillmentText = {"status": 200, "fulfillmentText": output["output"]}
+            else:
+                fulfillmentText = {"status": 200, "fulfillmentText": "Sorry can you try again?"}
+            return JsonResponse(fulfillmentText, safe=False)
+        except Exception as e:
+            return JsonResponse({"status": 200, "fulfillmentText": "Sorry cannot convert your file."}, safe=False)
     else:
         return HttpResponse("Wrong Request Type")
 
