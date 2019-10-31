@@ -1,2 +1,9 @@
 venv/
 .idea/
+.DS_Store
+**/__pycache__/
+__pycache__/
+dbcreater/migrations/*
+dbcreater/edbs/*
+!dbcreater/migrations/__init__.py
+!dbcreater/edbs/README.txt

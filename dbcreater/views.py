@@ -15,6 +15,7 @@ import os
 from django.http import HttpResponse, Http404
 from django.template import loader
 from django.shortcuts import render
+from django.template import loader
 import mysql.connector
 
 
@@ -37,13 +38,11 @@ except mysql.connector.errors as error:
 def index(request):
     if request.method == "POST":
         try:
-            body_unicode = request.body.decode('utf-8')
-            body = json.loads(body_unicode)
-            email = body["email"]
-            url = body["url"]
-            db = body["db"]
-            #daimond check this out  -> no need to call create on form submit method I added one more parameter to save_and_export if the type is html it will return html
-            return save_and_export(email, url, db, "html")
+            #email = request.POST.get('email')
+            email = request.POST['email']
+            url = request.POST["url"]
+            db = request.POST["typedb"]
+            return save_and_export(email,url,db,"html")
         except Exception as e:
             return HttpResponse("error page")
     # daimond check this out  -> else part is get request
@@ -51,9 +50,12 @@ def index(request):
         # daimond check this out  -> you need to render html form page here :-) and set onaction to the same index url no need to set it to create
         # when you do post it will go to the post thing and ask save_and_export to return html response
         #return HttpResponse("show form page here")
+        template = loader.get_template('dbcreater/index.html')
         context = {
+            'Hi': 111,
         }
-        return HttpResponse("show form page here")
+        return HttpResponse(template.render(context, request))
+        #return HttpResponse("show form page here")
 
 @csrf_exempt
 def download(request):
@@ -98,9 +100,9 @@ def save_and_export(email, url, database, returntype):
         deleteDB(dbname)
         # daimond check this out
         if returntype == "json":
-            return JsonResponse({"status": 200, "dblink": "http://127.0.0.1:8000/dbcreater/download/" + dbname + ".sql"})
+            return JsonResponse({"status": 200, "dblink": "http://127.0.0.1:8000/dbcreater/download/?db=" + dbname + ".sql"})
         else:
-            return HttpResponse("when user submits form -> this is the page you can show using above link")
+            return HttpResponse("http://127.0.0.1:8000/dbcreater/download/?db=" + dbname + ".sql")
     except Exception as e:
         deleteDB(dbname)
         #daimond check this out
