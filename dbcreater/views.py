@@ -14,8 +14,6 @@ from cloudbackend import settings
 import os
 from django.http import HttpResponse, Http404
 from django.template import loader
-from django.shortcuts import render
-from django.template import loader
 import mysql.connector
 
 
@@ -185,8 +183,8 @@ def connectDBtoDjango(dbname):
     newDatabase = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': dbname,
-        'USER': 'vaidehi',
-        'PASSWORD': '',
+        'USER': 'diamondnikhil',
+        'PASSWORD': 'diamondnikhil',
         'HOST': 'localhost',
         'PORT': '3306',
     }
