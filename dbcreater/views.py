@@ -183,8 +183,8 @@ def connectDBtoDjango(dbname):
     newDatabase = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': dbname,
-        'USER': 'diamondnikhil',
-        'PASSWORD': 'diamondnikhil',
+        'USER': mysql_username,
+        'PASSWORD': mysql_password,
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -193,7 +193,7 @@ def connectDBtoDjango(dbname):
 
 def exportDB(dbname, tables):
     file = open("dbcreater/edbs/%s.sql" % dbname, 'w+')
-    p1 = subprocess.Popen(["mysqldump", "-u", mysql_username, dbname], stdout=file, stderr=subprocess.STDOUT)
+    p1 = subprocess.Popen(["mysqldump", "-u", mysql_username,"-p"+mysql_password, dbname], stdout=file, stderr=subprocess.STDOUT)
     p1.communicate()
     file.close()
 
