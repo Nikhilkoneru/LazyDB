@@ -201,7 +201,7 @@ def exportDB(dbname, tables):
 def createDB(email):
     cursor.execute("DROP DATABASE IF EXISTS " + email)
     cursor.execute("CREATE DATABASE " + email)
-    cursor.execute("USE univDB;")
+    cursor.execute("USE " + email)
 
 
 def deleteDB(dbname):
