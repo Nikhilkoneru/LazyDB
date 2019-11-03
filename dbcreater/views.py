@@ -127,14 +127,14 @@ def save_and_export(email, url, database, returntype):
         deleteDB(dbname)
         # daimond check this out
         if returntype == "json":
-            return JsonResponse({"status": 200, "dblink": "http://127.0.0.1:8000/dbcreater/download/?db=" + dbname + ".sql"})
+            return JsonResponse({"status": 200, "dblink": "http://127.0.0.1:8000/dbcreater/download?db=" + dbname + ".sql"})
         else:
             return HttpResponse("http://127.0.0.1:8000/dbcreater/download/?db=" + dbname + ".sql")
     except Exception as e:
         deleteDB(dbname)
         # daimond check this out
         if returntype == "json":
-            return JsonResponse({"status": 400, "output": "Unable to fullfill your request"})
+            return JsonResponse({"status": 400, "output": "Unable to fullfill your request", "error":e})
         else:
             # you can render html error page
             return HttpResponse("you can create error page and render it")
