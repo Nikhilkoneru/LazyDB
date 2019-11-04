@@ -1,11 +1,9 @@
-from django.contrib import admin
-from django.urls import include, path
+from django.urls import path
 from . import views
 
-app_name = 'dbcreater'
 urlpatterns = [
-  path("create/", views.create, name='create'),
-  path("download", views.download, name='download'),
-  path("index", views.index, name='index'),
-  path("assistant_hook/", views.assistant_hook, name='assistant_hook'),
+  path("create", views.create, name='create'),
+  path("downloads", views.download, name='downloads'),
+  path("", views.index, name='index'),
+  path("assistant_hook", views.assistant_hook, name='assistant_hook'),
 ]

@@ -7,3 +7,4 @@ dbcreater/migrations/*
 dbcreater/edbs/*
 !dbcreater/migrations/__init__.py
 !dbcreater/edbs/README.txt
+backend.log

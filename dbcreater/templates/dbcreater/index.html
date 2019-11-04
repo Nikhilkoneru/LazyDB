@@ -9,7 +9,7 @@
 <h1>Enter Below:</h1>
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<form action="{% url 'dbcreater:index' %}" method="post">
+<form action="{% url 'index' %}" method="post">
 {% csrf_token %}
     <label for="useremail">Please enter your email:</label>
     <input type="email" name="email" id="ueremail" value=""><br><br>
