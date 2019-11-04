@@ -51,7 +51,8 @@ def assistant_hook(request):
                 fulfillmentText = {"status": 200, "fulfillmentText": "Sorry can you try again?"}
             return JsonResponse(fulfillmentText, safe=False)
         except Exception as e:
-            return JsonResponse({"status": 200, "fulfillmentText": "Sorry cannot convert your file."}, safe=False)
+            print(e)
+            return JsonResponse({"status": 200, "fulfillmentText": "Sorry cannot convert your file.","output":e}, safe=False)
     else:
         return HttpResponse("Wrong Request Type")
 
@@ -127,7 +128,7 @@ def save_and_export(email, url, database, returntype):
         deleteDB(dbname)
         # daimond check this out
         if returntype == "json":
-            return JsonResponse({"status": 200, "dblink": "http://127.0.0.1:8000/dbcreater/download?db=" + dbname + ".sql"})
+            return JsonResponse({"status": 200, "output": "http://127.0.0.1:8000/dbcreater/download?db=" + dbname + ".sql"})
         else:
             return HttpResponse("http://127.0.0.1:8000/dbcreater/download/?db=" + dbname + ".sql")
     except Exception as e:
