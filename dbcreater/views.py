@@ -7,7 +7,7 @@ from django.template import loader
 from dbcreater.dynamic_db import save_and_export
 import logging
 
-logging.basicConfig(filename='backend.log', level=logging.DEBUG)
+logging.basicConfig(filename='backend.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
 
 
 @csrf_exempt

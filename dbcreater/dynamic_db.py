@@ -20,7 +20,7 @@ mysql_password = settings.mysql_password
 server_url = settings.server_url
 cursor = settings.cursor
 export_file_path = settings.export_file_path
-logging.basicConfig(filename='backend.log', level=logging.DEBUG)
+logging.basicConfig(filename='backend.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
 
 
 def save_and_export(email, url, db, returntype):
