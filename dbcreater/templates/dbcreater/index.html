@@ -1,25 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
+{% load static %}
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Form</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="{%  static "dbcreater/js/jquery.js" %}"></script>
+<script src="{%  static "dbcreater/js/three.r92.min.js" %}"></script>
+<script src="{%  static "dbcreater/js/vanta.birds.min.js" %}"></script>
+<link rel="stylesheet" href="{%  static "dbcreater/css/reset.css" %}">
+<link rel="stylesheet" href="{%  static "dbcreater/css/stylesheet.css" %}">
+<link rel="stylesheet" href="{%  static "dbcreater/css/entypo.css" %}">
+<script src="{%  static "dbcreater/js/gallery.min.js" %}"></script>
+<link rel="stylesheet" href="{%  static "dbcreater/css/styles.css" %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </head>
 <body>
+  <section class="wm">
+    <!-- <div class="logo">
+      <img class='logo-light' src="./dist/logo.png">
+      <img class='logo-dark' src="./dist/logo-dark.png">
+    </div> -->
+    <div class="top-left">
+      <a href="https://github.com/vaidehib2910/LazyDB">
+        <i class="ent-github"> </i>
+        Vaidehi - GitHub
+      </a>
+      <a href="https://github.com/Nikhilkoneru/LazyDB">
+        <i class="ent-github"> </i>
+        Nikhil - GitHub
+      </a>
+    </div>
+    <div class="d-flex justify-content-center">
+      <div class="eight columns">
+        <h1> LazyDB </h1>
+        <h3> Convert CSV's, XLSX files to database in seconds. </h3>
+      </div>
+    </div>
+  </section>
 
-<h1>Enter Below:</h1>
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-
-<form action="{% url 'index' %}" method="post">
-{% csrf_token %}
-    <label for="useremail">Please enter your email:</label>
-    <input type="email" name="email" id="ueremail" value=""><br><br>
-    <label for="givenurl">Enter input database url:</label>
-    <input type="url" name="url" id="givenurl" value=""><br><br>
-    <input type="radio" name="typedb" value="mysql">MySQL<br>
-    <input type="radio" name="typedb" value="postgresql">PostgreSQL<br><br>
-
-    <input type="submit" value="Get my transformed database">
-</form>
-
+  <section class="gallery">
+    <div class="justify-content-center" style="padding:25%;padding-top: 0px;padding-bottom: 0px">
+      <div class="ten columns">
+        <h2 style="padding-left: 38%"> Convert Files </h2>
+        <form action="http://127.0.0.1:8000/" method="POST" role="form" class="form-horizontal">
+  			<div class="form-group">
+    			<label for="exampleInputEmail1">Email address</label>
+   		 		<input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+    			<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+  			</div>
+  			<div class="form-group">
+    			<label for="exampleInputPassword1">URL</label>
+    			<input type="text" class="form-control" id="exampleInputPassword1" name="url"  placeholder="https://">
+  			</div>
+  			<div class="form-group">
+    			<label for="db">DataBase Type</label>
+    			<select class="form-control" id="db"  name="db">
+      				<option value="mysql">MySQL</option>
+      				<option value="mongodb">MongoDB</option>
+    			</select>
+ 	 		</div>
+ 	 		<div style="padding-left: 38%">
+  			<button type="submit" class="btn">Submit</button>
+  			</div>
+		</form>
+      </div>
+    </div>
+  </section>
+  <section class="top-follow">
+    <div class="container clearfix">
+      <div class="sixteen columns">
+        <hr>
+      </div>
+      <!-- <div class="four columns">
+        <a class="strikingly" href="//www.strikingly.com/?ref=vanta">
+          <img src="//www.tengbao.me/images/strikingly-logo-white.svg">
+        </a>
+      </div> -->
+      <div class="sixteen columns">
+        <h4 style="margin-top: 12px; padding-left: 16%">
+          LazyDB is brought to you by <a href="https://www.linkedin.com/in/vaidehi-barevadia-291096/">Vaidehi Barevadia
+            <img class="rounded-circle" style="width: 100px;height: 100px" src="{%  static "dbcreater/images/vaidehi.jpeg" %}" class="" alt="Cinque Terre"></a>
+           and <a href="https://www.linkedin.com/in/konerunikhil/">Nikhil Koneru
+           <img src="{%  static "dbcreater/images/nikhil.jpeg" %}" style="width: 100px;height: 100px" class="rounded-circle w-10 " alt="Cinque Terre"></a>.
+        </h4>
+        </h4>
+      </div>
+    </div>
+  </section>
 </body>
 </html>
