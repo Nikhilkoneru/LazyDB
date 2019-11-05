@@ -5,7 +5,7 @@ import urllib.request
 from collections import OrderedDict
 from io import BytesIO
 from zipfile import ZipFile
-
+import os
 import pandas
 from django.core.management import call_command
 from django.db import models
@@ -23,42 +23,35 @@ export_file_path = settings.export_file_path
 logging.basicConfig(filename='backend.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
 
 
-def save_and_export(email, url, db, returntype):
+def save_and_export(email, url, db):
     if mysql_status:
-        logging.debug('Method:save_and_export, Args:[email=%s, url=%s, db=%s, returntype=%s]', email, url, db,
-                      returntype)
+        logging.debug('Method:save_and_export, Args:[email=%s, url=%s, db=%s]', email, url, db)
         dbname = "".join(" ".join(re.findall("[a-zA-Z]+", email.split("@")[0])).split())
         createDB(dbname)
         connectDBtoDjango(dbname)
         try:
             tables_dataframe_list = read(url)
-            logging.debug('Method:save_and_export, Args:[url=%s], Message: Num of tables=%s', url, len(tables_dataframe_list))
+            logging.debug('Method:save_and_export, Args:[url=%s], Message: Num of tables=%s', url,
+                          len(tables_dataframe_list))
             for table in tables_dataframe_list:
                 create_and_save_table(dbname, url, db, table)
             exportDB(dbname, tables_dataframe_list)
             deleteDB(dbname)
-            if returntype == "json":
-                return JsonResponse(
-                    {"status": 200, "output": server_url + "/download?db=" + dbname + ".sql"})
-            else:
-                return HttpResponse(server_url + "/download?db=" + dbname + ".sql")
+            return JsonResponse({"status": 200, "db_name": dbname, "file_type": "sql"})
         except Exception as e:
             logging.debug('Method:save_and_export,  Error: %s', e)
             deleteDB(dbname)
-            if returntype == "json":
-                return JsonResponse({"status": 400, "output": "Unable to fullfill your request", "error": e})
-            else:
-                return HttpResponse("you can create error page and render it")
-    elif returntype == "html":
-        logging.debug('Method:save_and_export,  Error: Database Status False')
-        return HttpResponse("Cannot handle your request")
+            return JsonResponse({"status": 400, "db_name": dbname, "file_type": "sql", "error": e})
     else:
-        logging.debug('Method:save_and_export,  Error: Database Status False')
-        return JsonResponse({"status": 400, "output": "Cannot handle your request"})
+        logging.debug('Method:save_and_export, output:error, Database Status False')
+        return JsonResponse({"status": 400, "output": "error"})
 
 
 def create_and_save_table(dbname, url, database, csv_df):
-    logging.debug('Method:create_and_save_table, Args:[dbname=%s, url=%s, database=%s, len(csv_df)=%s], Message: Create and Save Table', dbname,url,database,len(csv_df))
+    logging.debug(
+        'Method:create_and_save_table, Args:[dbname=%s, url=%s, database=%s, len(csv_df)=%s], Message: Create and '
+        'Save Table',
+        dbname, url, database, len(csv_df))
     columns = csv_df.columns
     data_types = csv_df.dtypes
     attrs = OrderedDict({'__module__': 'dbcreater.models'})
@@ -97,6 +90,19 @@ def read(url):
         csv_df = pandas.read_csv(url)
         csv_df.columns = [c.lower() for c in csv_df.columns]
         return [csv_df]
+
+
+def download_helper(db, file_type):
+    logging.debug('Method:download_helper, Args:[db=%s]', db)
+    file_path = "dbcreater/edbs/%s.%s" % (db, file_type)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/sql")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    else:
+        logging.error('Method:download, Args:[db=%s], Message: Unable to find this file', file_path)
+        return HttpResponse('Invalid Request')
 
 
 def connectDBtoDjango(dbname):
