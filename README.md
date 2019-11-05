@@ -38,7 +38,7 @@ python3 manage.py runserver
 
 ## Navigate to the URL
 
-Index page will be load once you open this link in browser 127.0.0.1:8000 
+Open 127.0.0.1:8000 in a browser to view the index page. 
 
 # Contributor Covenant Code of Conduct
 
