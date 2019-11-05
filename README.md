@@ -1,6 +1,8 @@
 # Welcome to LazyDB!
 
-A Django Backend Service which can convert CSV's or Zip of CSV's to a **Database** of your choice. Developed by **Nikhil K** and **Vaidehi Barevadia**.
+A Django Backend Service which can convert CSV's or Zip of CSV's to a **Database** of your choice.
+
+>  Developed by **Nikhil K** and **Vaidehi Barevadia**.
 
 
 # Steps to run the backend 
