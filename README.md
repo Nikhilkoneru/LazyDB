@@ -9,7 +9,7 @@ A Django Backend Service which can convert CSV's or Zip of CSV's to a **Database
 
 ## Git Clone
 
-Clone the project 
+Clone the project. 
 
 ## Requirements
 1) Python3
@@ -21,12 +21,12 @@ pip install -r requirements.txt
 ```
 
 ## Edit Settings.py
-Change databases username, password and change the DEBUG, PRODUCTION boolean values based upon your requirements.
+Change databases username, password and DEBUG, PRODUCTION boolean values based upon your requirements.
 ```
 sudo vi cloudbackend/settings.py
 ```
 ## Permissions 
-This backend service writes files to the project. So we need to give appropriate permissions to the project
+This backend service writes files to the project. So we need to give appropriate permissions to the project.
 ```
 sudo chmod -R 755 *
 ```
