@@ -6,8 +6,9 @@ from django.template import loader
 from dbcreater.dynamic_db import save_and_export, download_helper
 import logging
 from cloudbackend import settings
-logging.basicConfig(filename='backend.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
 server_url = settings.server_url
+logging.basicConfig(filename=settings.logging_file_path, level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
+
 
 @csrf_exempt
 def assistant_hook(request):
