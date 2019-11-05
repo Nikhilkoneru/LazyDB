@@ -2,7 +2,7 @@
 
 A Django Backend Service which can convert CSV's or Zip of CSV's to a **Database** of your choice.
 
->  Developed by **Nikhil K** and **Vaidehi Barevadia**.
+>  Developed by **Vaidehi Barevadia** and **Nikhil Koneru** .
 
 
 # Steps to run the backend 
