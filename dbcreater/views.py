@@ -2,7 +2,7 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import os
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.template import loader
 from dbcreater.dynamic_db import save_and_export
 import logging
@@ -32,12 +32,13 @@ def assistant_hook(request):
             return JsonResponse(fulfillment_text, safe=False)
         except Exception as e:
             logging.warning('Method:assistant_hook, Error: %s', e)
-            return JsonResponse({"status": 200, "fulfillmentText": "Sorry cannot convert your file."},
+            return JsonResponse({"status": 400, "fulfillmentText": "Sorry cannot convert your file."},
                                 safe=False)
     else:
         logging.debug('Method:assistant_hook, Args=[method=%s], Message: Cannot handle your request',
                       request.method)
-        return HttpResponse("Cannot handle your request")
+        return JsonResponse({"status": 400, "fulfillmentText": "Sorry cannot convert your file."},
+                            safe=False)
 
 
 @csrf_exempt
