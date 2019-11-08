@@ -24,7 +24,7 @@ def assistant_hook(request):
                     "Method:assistant_hook, Message: POST request, Args: [action=%s, url=%s, email=%s, db=%s]", action,
                     url, email,
                     db)
-                output = json.loads(save_and_export(email, url, db).content)
+                output = json.loads(save_and_export(email, url, db).content.decode('utf-8'))
                 output_url = "%s/downloads?db=%s.%s" % (server_url, output["db_name"],output["file_type"])
                 fulfillment_text = {"status": 200, "fulfillmentText": output_url}
             else:
@@ -49,7 +49,7 @@ def index(request):
         try:
             email, url, db = request.POST['email'], request.POST["url"], request.POST["db"]
             logging.debug("Method:index, Message:POST request, Args: [url=%s, email=%s, db=%s]", url, email, db)
-            output = json.loads(save_and_export(email, url, db).content)
+            output = json.loads(save_and_export(email, url, db).content.decode('utf-8'))
             return download_helper(output["db_name"], output["file_type"])
         except Exception as e:
             logging.error('Method:index, Error: %s', e)
