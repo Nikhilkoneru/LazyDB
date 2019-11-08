@@ -58,7 +58,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'dbcreater.apps.DbcreaterConfig'
+    'dbcreater.apps.DbcreaterConfig',
+    'dbcreater.templatetags'
 ]
 
 MIDDLEWARE = [
@@ -99,8 +100,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'db',
-        'USER': 'diamondnikhil',
-        'PASSWORD': 'diamondnikhil',
+        'USER': mysql_username,
+        'PASSWORD': mysql_password,
         'HOST': 'localhost',
         'PORT': '3306',
     }

@@ -1,4 +1,5 @@
 {% load static %}
+{% load tags %}
 <html>
 <head>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -41,7 +42,7 @@
     <div class="justify-content-center" style="display: flex;align-items: center;justify-content: center">
       <div class="ten columns">
         <h2 style="text-align: center;"> Convert Files </h2>
-        <form action="http://127.0.0.1:8000/" method="POST" role="form" class="form-horizontal">
+        <form action="{% get_setting "server_url" %}" method="POST" role="form" class="form-horizontal">
   			<div class="form-group">
     			<label for="exampleInputEmail1">Email address</label>
    		 		<input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Enter email">
