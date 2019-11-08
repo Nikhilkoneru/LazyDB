@@ -20,7 +20,8 @@ mysql_password = settings.mysql_password
 server_url = settings.server_url
 cursor = settings.cursor
 export_file_path = settings.export_file_path
-logging.basicConfig(filename=settings.logging_file_path, level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
+logging.basicConfig(filename=settings.logging_file_path, level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)s %(message)s')
 
 
 def save_and_export(email, url, db):
@@ -94,7 +95,7 @@ def read(url):
 
 def download_helper(db, file_type):
     logging.debug('Method:download_helper, Args:[db=%s]', db)
-    file_path = "dbcreater/edbs/%s.%s" % (db, file_type)
+    file_path = "%s%s.%s" % (export_file_path, db, file_type)
     if os.path.exists(file_path):
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/sql")
