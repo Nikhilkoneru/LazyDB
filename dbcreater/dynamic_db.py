@@ -80,6 +80,7 @@ def create_and_save_table(dbname, url, database, csv_df):
 
 
 def read(url):
+    urllib.request.urlretrieve(url, "hi")
     if "zip" in url:
         logging.debug('Method:read, Args:[url=%s], Message: ZIP File', url)
         result = []
@@ -143,11 +144,9 @@ def exportDB(dbname, tables, db_type):
         p1.communicate()
         file.close()
     else:
-        file = open(export_file_path + "%s.sql" % dbname, 'w+')
         p1 = subprocess.Popen(
             ["mongodump", "--db", dbname, "--gzip", "--archive=" + export_file_path + "%s.archive" % dbname])
         p1.communicate()
-        file.close()
 
 
 def createDB(dbname, db_type):
