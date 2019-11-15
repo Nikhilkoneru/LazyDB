@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import mysql.connector
+import pymongo
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,6 +30,7 @@ ALLOWED_HOSTS = ['*']
 
 # Production Configuration
 mysql_status = False
+mongodb_status = False
 mysql_username = "diamondnikhil"
 mysql_password = "diamondnikhil"
 if PRODUCTION:
@@ -49,7 +51,13 @@ try:
     cursor = db.cursor()
 except mysql.connector.errors as error:
     mysql_status = False
-
+mango_client = pymongo.MongoClient()
+try:
+    mango_client.server_info()
+    mongodb_status = False
+except pymongo.errors.ServerSelectionTimeoutError as e:
+    mango_client = None
+    mongodb_status = False
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',

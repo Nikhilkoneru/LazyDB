@@ -6,8 +6,10 @@ from django.template import loader
 from dbcreater.dynamic_db import save_and_export, download_helper
 import logging
 from cloudbackend import settings
+
 server_url = settings.server_url
-logging.basicConfig(filename=settings.logging_file_path, level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
+logging.basicConfig(filename=settings.logging_file_path, level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)s %(message)s')
 
 
 @csrf_exempt
@@ -25,7 +27,7 @@ def assistant_hook(request):
                     url, email,
                     db)
                 output = json.loads(save_and_export(email, url, db).content.decode('utf-8'))
-                output_url = "%s/downloads?db=%s.%s" % (server_url, output["db_name"],output["file_type"])
+                output_url = "%s/downloads?db=%s.%s" % (server_url, output["db_name"], output["file_type"])
                 fulfillment_text = {"status": 200, "fulfillmentText": output_url}
             else:
                 logging.debug("Method:assistant_hook, Args: action=%s, Message: Unknown Action", action)

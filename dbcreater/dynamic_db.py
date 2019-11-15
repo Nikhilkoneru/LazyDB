@@ -20,29 +20,37 @@ mysql_password = settings.mysql_password
 server_url = settings.server_url
 cursor = settings.cursor
 export_file_path = settings.export_file_path
+mango_client = settings.mango_client
 logging.basicConfig(filename=settings.logging_file_path, level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(message)s')
 
 
-def save_and_export(email, url, db):
+def get_export_type(db_type):
+    if db_type == "mysql":
+        return "sql"
+    else:
+        return "archive"
+
+
+def save_and_export(email, url, db_type):
     if mysql_status:
-        logging.debug('Method:save_and_export, Args:[email=%s, url=%s, db=%s]', email, url, db)
+        logging.debug('Method:save_and_export, Args:[email=%s, url=%s, db=%s]', email, url, db_type)
         dbname = "".join(" ".join(re.findall("[a-zA-Z]+", email.split("@")[0])).split())
-        createDB(dbname)
-        connectDBtoDjango(dbname)
+        createDB(dbname, db_type)
+        connectDBtoDjango(dbname, db_type)
         try:
             tables_dataframe_list = read(url)
             logging.debug('Method:save_and_export, Args:[url=%s], Message: Num of tables=%s', url,
                           len(tables_dataframe_list))
             for table in tables_dataframe_list:
-                create_and_save_table(dbname, url, db, table)
-            exportDB(dbname, tables_dataframe_list)
-            deleteDB(dbname)
-            return JsonResponse({"status": 200, "db_name": dbname, "file_type": "sql"})
+                create_and_save_table(dbname, url, db_type, table)
+            exportDB(dbname, tables_dataframe_list, db_type)
+            deleteDB(dbname, db_type)
+            return JsonResponse({"status": 200, "db_name": dbname, "file_type": get_export_type(db_type)})
         except Exception as e:
             logging.debug('Method:save_and_export,  Error: %s', e)
-            deleteDB(dbname)
-            return JsonResponse({"status": 400, "db_name": dbname, "file_type": "sql", "error": e})
+            deleteDB(dbname, db_type)
+            return JsonResponse({"status": 400, "db_name": dbname, "file_type": get_export_type(db_type), "error": e})
     else:
         logging.debug('Method:save_and_export, output:error, Database Status False')
         return JsonResponse({"status": 400, "output": "error"})
@@ -106,38 +114,56 @@ def download_helper(db, file_type):
         return HttpResponse('Invalid Request')
 
 
-def connectDBtoDjango(dbname):
+def connectDBtoDjango(dbname, db_type):
     logging.debug('Method:connectDBtoDjango, Args:[dbname=%s], Message: Connect DB to Django', dbname)
-    new_database = {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': dbname,
-        'USER': mysql_username,
-        'PASSWORD': mysql_password,
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
+    if db_type == "mysql":
+        new_database = {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': dbname,
+            'USER': mysql_username,
+            'PASSWORD': mysql_password,
+            'HOST': 'localhost',
+            'PORT': '3306',
+        }
+    else:
+        new_database = {
+            'ENGINE': 'djongo',
+            'NAME': dbname,
+            'ENFORCE_SCHEMA': True
+        }
     settings.DATABASES[dbname] = new_database
 
 
-def exportDB(dbname, tables):
+def exportDB(dbname, tables, db_type):
     logging.debug('Method:exportDB, Args:[dbname=%s], Message: Export DB', dbname)
-    file = open(export_file_path + "%s.sql" % dbname, 'w+')
-    p1 = subprocess.Popen(["mysqldump", "-u", mysql_username, "-p" + mysql_password, dbname], stdout=file,
-                          stderr=subprocess.STDOUT)
-    p1.communicate()
-    file.close()
+    if db_type == "mysql":
+        file = open(export_file_path + "%s.sql" % dbname, 'w+')
+        p1 = subprocess.Popen(["mysqldump", "-u", mysql_username, "-p" + mysql_password, dbname], stdout=file,
+                              stderr=subprocess.STDOUT)
+        p1.communicate()
+        file.close()
+    else:
+        file = open(export_file_path + "%s.sql" % dbname, 'w+')
+        p1 = subprocess.Popen(
+            ["mongodump", "--db", dbname, "--gzip", "--archive=" + export_file_path + "%s.archive" % dbname])
+        p1.communicate()
+        file.close()
 
 
-def createDB(dbname):
+def createDB(dbname, db_type):
     logging.debug('Method:createDB, Args:[dbname=%s], Message: Drop and Create DB', dbname)
-    cursor.execute("DROP DATABASE IF EXISTS " + dbname)
-    cursor.execute("CREATE DATABASE " + dbname)
-    cursor.execute("USE " + dbname)
+    if db_type == "mysql":
+        cursor.execute("DROP DATABASE IF EXISTS " + dbname)
+        cursor.execute("CREATE DATABASE " + dbname)
+        cursor.execute("USE " + dbname)
 
 
-def deleteDB(dbname):
+def deleteDB(dbname, db_type):
     logging.debug('Method:deleteDB, Args:[dbname=%s], Message: Delete DB', dbname)
-    cursor.execute("Drop DATABASE IF EXISTS " + dbname)
+    if db_type == "mysql":
+        cursor.execute("Drop DATABASE IF EXISTS " + dbname)
+    else:
+        mango_client.drop_database(dbname)
     del settings.DATABASES[dbname]
 
 
