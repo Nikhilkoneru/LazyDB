@@ -3,7 +3,6 @@ certifi==2019.9.11
 chardet==3.0.4
 dataclasses==0.6
 Django==2.2.6
-django-dynamic-model==0.1.0
 django-filter==2.2.0
 djangorestframework==3.10.3
 djongo==1.2.36
