@@ -33,6 +33,7 @@ mysql_status = False
 mongodb_status = False
 mysql_username = "diamondnikhil"
 mysql_password = "diamondnikhil"
+
 if PRODUCTION:
     server_url = "https://35.245.82.106"
     export_file_path = "var/www/html/LazyDB/dbcreater/edbs/"
