@@ -11,7 +11,7 @@ from django.core.management import call_command
 from django.db import models
 from django.http import HttpResponse
 from django.http import JsonResponse
-
+import pandas as pd
 from cloudbackend import settings
 
 mysql_status = settings.mysql_status
@@ -39,11 +39,16 @@ def save_and_export(email, url, db_type):
         createDB(dbname, db_type)
         connectDBtoDjango(dbname, db_type)
         try:
-            tables_dataframe_list = read(url)
+            output = read(url)
+            tables_dataframe_list, table_names = output["dataframes"], output["table_names"]
             logging.debug('Method:save_and_export, Args:[url=%s], Message: Num of tables=%s', url,
                           len(tables_dataframe_list))
-            for table in tables_dataframe_list:
-                create_and_save_table(dbname, url, db_type, table)
+            for table, name in zip(tables_dataframe_list, table_names):
+                try:
+                    create_and_save_table(dbname, url, db_type, table, name)
+                except Exception as e:
+                    logging.debug('Method:save_and_export, Error:%s, Message: Error with csv=%s', e, name)
+                    pass
             exportDB(dbname, tables_dataframe_list, db_type)
             deleteDB(dbname, db_type)
             return JsonResponse({"status": 200, "db_name": dbname, "file_type": get_export_type(db_type)})
@@ -56,7 +61,7 @@ def save_and_export(email, url, db_type):
         return JsonResponse({"status": 400, "output": "error"})
 
 
-def create_and_save_table(dbname, url, database, csv_df):
+def create_and_save_table(dbname, url, database, csv_df, table_name):
     logging.debug(
         'Method:create_and_save_table, Args:[dbname=%s, url=%s, database=%s, len(csv_df)=%s], Message: Create and '
         'Save Table',
@@ -65,7 +70,6 @@ def create_and_save_table(dbname, url, database, csv_df):
     data_types = csv_df.dtypes
     attrs = OrderedDict({'__module__': 'dbcreater.models'})
     columns_dic = OrderedDict()
-    table_name = "".join(" ".join(re.findall("[a-zA-Z]+", url.split("/")[-1])).split())
     for i, val in enumerate(columns):
         column_type = getDynamicType(str(data_types[i]))
         attrs.update({val.lower(): column_type})
@@ -80,26 +84,30 @@ def create_and_save_table(dbname, url, database, csv_df):
 
 
 def read(url):
-    urllib.request.urlretrieve(url, "hi")
     if "zip" in url:
         logging.debug('Method:read, Args:[url=%s], Message: ZIP File', url)
         result = []
         url_m = urllib.request.urlopen(url)
+        table_names = []
         with ZipFile(BytesIO(url_m.read())) as my_zip_file:
             for contained_file in my_zip_file.namelist():
                 try:
                     csv_df = pandas.read_csv(my_zip_file.open(contained_file))
                     if not csv_df.empty:
+                        csv_df = csv_df.where(pd.notnull(csv_df), None)
                         csv_df.columns = [c.lower() for c in csv_df.columns]
                         result.append(csv_df)
+                        table_names.append(contained_file)
                 except Exception as e:
                     pass
-        return result
+        return {"dataframes": result, "table_names": table_names}
     else:
         logging.debug('Method:read, Args:[url=%s], Message: CSV File', url)
         csv_df = pandas.read_csv(url)
+        csv_df = csv_df.where(pd.notnull(csv_df), None)
         csv_df.columns = [c.lower() for c in csv_df.columns]
-        return [csv_df]
+        table_name = ["".join(" ".join(re.findall("[a-zA-Z]+", url.split("/")[-1])).split())]
+        return {"dataframes": [csv_df], "table_names": table_name}
 
 
 def download_helper(db, file_type):
@@ -175,4 +183,4 @@ def getDynamicType(type):
     elif type == "bool":
         return models.BooleanField()
     else:
-        return models.CharField(max_length=100, blank=True, null=True)
+        return models.CharField(max_length=1000, blank=True, null=True, default=None)

@@ -1,4 +1,6 @@
 import json
+
+from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
@@ -49,7 +51,14 @@ def index(request):
     if request.method == "POST":
         logging.debug('Method:index, Message: POST Request')
         try:
-            email, url, db = request.POST['email'], request.POST["url"], request.POST["db"]
+            email, db = request.POST['email'], request.POST["db"]
+            if "url" in request.POST and request.POST['url'] != "":
+                url = request.POST['url']
+            elif "file" in request.FILES:
+                file = request.FILES['file']
+                fs = FileSystemStorage()
+                filename = fs.save(file.name, file)
+                url = server_url + fs.url(filename)
             logging.debug("Method:index, Message:POST request, Args: [url=%s, email=%s, db=%s]", url, email, db)
             output = json.loads(save_and_export(email, url, db).content.decode('utf-8'))
             return download_helper(output["db_name"], output["file_type"])

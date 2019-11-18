@@ -42,7 +42,7 @@
     <div class="justify-content-center" style="display: flex;align-items: center;justify-content: center">
       <div class="ten columns">
         <h2 style="text-align: center;"> Convert Files </h2>
-        <form action="{% get_setting "server_url" %}" method="POST" role="form" class="form-horizontal">
+        <form action="{% get_setting "server_url" %}" method="POST" role="form" class="form-horizontal" enctype="multipart/form-data">
   			<div class="form-group">
     			<label for="exampleInputEmail1">Email address</label>
    		 		<input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Enter email">
@@ -51,6 +51,11 @@
   			<div class="form-group">
     			<label for="exampleInputPassword1">URL</label>
     			<input type="text" class="form-control" id="exampleInputPassword1" name="url"  placeholder="https://">
+  			</div>
+            <h2>or</h2>
+            <div class="form-group">
+    			<label for="exampleInputPassword1">File</label>
+    			<input type="file" class="form-control" id="file" name="file" >
   			</div>
   			<div class="form-group">
     			<label for="db">DataBase Type</label>
