@@ -7,9 +7,13 @@ from django.http import HttpResponse
 from django.template import loader
 from dbcreater.dynamic_db import save_and_export, download_helper
 import logging
+import requests
 from cloudbackend import settings
+import re
 
 server_url = settings.server_url
+media_url = settings.MEDIA_URL
+media_root = settings.MEDIA_ROOT
 logging.basicConfig(filename=settings.logging_file_path, level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(message)s')
 
@@ -54,6 +58,13 @@ def index(request):
             email, db = request.POST['email'], request.POST["db"]
             if "url" in request.POST and request.POST['url'] != "":
                 url = request.POST['url']
+                r = requests.get(url, allow_redirects=True)
+                if "Content-Disposition" in r.headers.keys():
+                    fname = re.findall("filename=(.+)", r.headers["Content-Disposition"])[0]
+                else:
+                    fname = url.split("/")[-1]
+                open(media_root+fname, 'wb').write(r.content)
+                url = server_url+media_url+fname
             elif "file" in request.FILES:
                 file = request.FILES['file']
                 fs = FileSystemStorage()
