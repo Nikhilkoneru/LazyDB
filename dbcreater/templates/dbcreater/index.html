@@ -16,10 +16,6 @@
 </head>
 <body>
   <section class="wm">
-    <!-- <div class="logo">
-      <img class='logo-light' src="./dist/logo.png">
-      <img class='logo-dark' src="./dist/logo-dark.png">
-    </div> -->
     <div class="top-left">
       <a href="https://github.com/vaidehib2910/LazyDB">
         <i class="ent-github"> </i>
@@ -33,7 +29,7 @@
     <div class="d-flex justify-content-center">
       <div class="eight columns">
         <h1> LazyDB </h1>
-        <h3> Convert CSV's, XLSX files to database in seconds. </h3>
+        <h3> Convert CSV's or Zip of CSV's to a database in seconds.</h3>
       </div>
     </div>
   </section>
@@ -45,17 +41,17 @@
         <form action="{% get_setting "server_url" %}" method="POST" role="form" class="form-horizontal" enctype="multipart/form-data">
   			<div class="form-group">
     			<label for="exampleInputEmail1">Email address</label>
-   		 		<input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+   		 		<input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
     			<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
   			</div>
   			<div class="form-group">
     			<label for="exampleInputPassword1">URL</label>
-    			<input type="text" class="form-control" id="exampleInputPassword1" name="url"  placeholder="https://">
+    			<input type="text" class="form-control" id="url" name="url"  placeholder="https://" onchange="disableFile();">
   			</div>
             <h2>or</h2>
             <div class="form-group">
     			<label for="exampleInputPassword1">File</label>
-    			<input type="file" class="form-control" id="file" name="file" >
+    			<input type="file" class="form-control" id="file" name="file" onchange="disableUrl();">
   			</div>
   			<div class="form-group">
     			<label for="db">DataBase Type</label>
@@ -76,11 +72,6 @@
       <div class="sixteen columns">
         <hr>
       </div>
-      <!-- <div class="four columns">
-        <a class="strikingly" href="//www.strikingly.com/?ref=vanta">
-          <img src="//www.tengbao.me/images/strikingly-logo-white.svg">
-        </a>
-      </div> -->
       <div class="sixteen columns" style="display: flex;align-items: center;justify-content: center">
         <h4>
           LazyDB is brought to you by <a href="https://www.linkedin.com/in/vaidehi-barevadia-291096/">Vaidehi Barevadia
@@ -93,4 +84,12 @@
     </div>
   </section>
 </body>
+<script>
+    function  disableFile() {
+        document.getElementById("file").disabled = document.getElementById("url").value.length>0;
+    }
+    function disableUrl(){
+          document.getElementById("url").disabled = document.getElementById("file").files.length>0;
+    }
+</script>
 </html>
