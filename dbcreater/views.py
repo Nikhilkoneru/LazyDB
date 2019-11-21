@@ -28,6 +28,13 @@ def assistant_hook(request):
             parameters = req.get('queryResult').get('parameters')
             if action == "CreateDB":
                 email, url, db = parameters["email"], parameters["url"], parameters["db"]
+                r = requests.get(url, allow_redirects=True)
+                if "Content-Disposition" in r.headers.keys():
+                    fname = re.findall("filename=(.+)", r.headers["Content-Disposition"])[0]
+                else:
+                    fname = url.split("/")[-1]
+                open(media_root + fname, 'wb').write(r.content)
+                url = server_url + media_url + fname
                 logging.debug(
                     "Method:assistant_hook, Message: POST request, Args: [action=%s, url=%s, email=%s, db=%s]", action,
                     url, email,
@@ -72,6 +79,7 @@ def index(request):
                 url = server_url + fs.url(filename)
             logging.debug("Method:index, Message:POST request, Args: [url=%s, email=%s, db=%s]", url, email, db)
             output = json.loads(save_and_export(email, url, db).content.decode('utf-8'))
+            # deleteFiles()
             return download_helper(output["db_name"], output["file_type"])
         except Exception as e:
             logging.error('Method:index, Error: %s', e)
