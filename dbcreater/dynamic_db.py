@@ -101,7 +101,7 @@ def read(url):
                         csv_df = csv_df.where(pd.notnull(csv_df), None)
                         csv_df.columns = [c.lower() for c in csv_df.columns]
                         result.append(csv_df)
-                        table_names.append(Path(contained_file).stem)
+                        table_names.append("".join(" ".join(re.findall("[a-zA-Z]+", Path(contained_file).stem)).split()))
                 except Exception as e:
                     pass
         return {"dataframes": result, "table_names": table_names}
@@ -110,7 +110,8 @@ def read(url):
         csv_df = pandas.read_csv(url)
         csv_df = csv_df.where(pd.notnull(csv_df), None)
         csv_df.columns = [c.lower() for c in csv_df.columns]
-        table_name = [Path(url).stem]
+
+        table_name = ["".join(" ".join(re.findall("[a-zA-Z]+",Path(url).stem )).split())]
         return {"dataframes": [csv_df], "table_names": table_name}
 
 
