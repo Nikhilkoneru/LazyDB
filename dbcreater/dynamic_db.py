@@ -69,7 +69,11 @@ def create_and_save_table(dbname, url, database, csv_df, table_name):
         dbname, url, database, len(csv_df))
     columns = csv_df.columns
     data_types = csv_df.dtypes
-    attrs = OrderedDict({'__module__': 'dbcreater.models'})
+
+    class Meta:
+        db_table = table_name
+
+    attrs = OrderedDict({'__module__': 'dbcreater.models', 'Meta': Meta})
     columns_dic = OrderedDict()
     for i, val in enumerate(columns):
         column_type = getDynamicType(str(data_types[i]))
@@ -125,7 +129,8 @@ def download_helper(db, file_type):
 
 
 def connectDBtoDjango(dbname, db_type):
-    logging.debug('Method:connectDBtoDjango, Args:[dbname=%s,db_type=%s], Message: Connect DB to Django', dbname, db_type)
+    logging.debug('Method:connectDBtoDjango, Args:[dbname=%s,db_type=%s], Message: Connect DB to Django', dbname,
+                  db_type)
     if db_type == "mysql":
         new_database = {
             'ENGINE': 'django.db.backends.mysql',
@@ -159,7 +164,7 @@ def exportDB(dbname, tables, db_type):
 
 
 def createDB(dbname, db_type):
-    logging.debug('Method:createDB, Args:[dbname=%s,db_type=%s], Message: Drop and Create DB', dbname,db_type)
+    logging.debug('Method:createDB, Args:[dbname=%s,db_type=%s], Message: Drop and Create DB', dbname, db_type)
     if db_type == "mysql":
         cursor.execute("DROP DATABASE IF EXISTS " + dbname)
         cursor.execute("CREATE DATABASE " + dbname)
@@ -197,4 +202,3 @@ def getDynamicType(type):
 #                     os.unlink(file_path)
 #             except Exception as e:
 #                 print(e)
-
