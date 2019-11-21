@@ -51,6 +51,7 @@ def save_and_export(email, url, db_type):
                     pass
             exportDB(dbname, tables_dataframe_list, db_type)
             deleteDB(dbname, db_type)
+            # deleteMigrations()
             return JsonResponse({"status": 200, "db_name": dbname, "file_type": get_export_type(db_type)})
         except Exception as e:
             logging.debug('Method:save_and_export,  Error: %s', e)
@@ -97,7 +98,7 @@ def read(url):
                         csv_df = csv_df.where(pd.notnull(csv_df), None)
                         csv_df.columns = [c.lower() for c in csv_df.columns]
                         result.append(csv_df)
-                        table_names.append(contained_file)
+                        table_names.append(os.path.basename(contained_file))
                 except Exception as e:
                     pass
         return {"dataframes": result, "table_names": table_names}
@@ -184,3 +185,16 @@ def getDynamicType(type):
         return models.BooleanField()
     else:
         return models.CharField(max_length=1000, blank=True, null=True, default=None)
+
+# def deleteMigrations():
+#     logging.info('Method:deleteMigrations, Message: Deleting')
+#     folder = os.getcwd()+'/dbcreater/migrations/'
+#     for the_file in os.listdir(folder):
+#         if the_file != "__init__.py":
+#             file_path = os.path.join(folder, the_file)
+#             try:
+#                 if os.path.isfile(file_path):
+#                     os.unlink(file_path)
+#             except Exception as e:
+#                 print(e)
+
