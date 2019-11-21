@@ -124,7 +124,7 @@ def download_helper(db, file_type):
 
 
 def connectDBtoDjango(dbname, db_type):
-    logging.debug('Method:connectDBtoDjango, Args:[dbname=%s], Message: Connect DB to Django', dbname)
+    logging.debug('Method:connectDBtoDjango, Args:[dbname=%s,db_type=%s], Message: Connect DB to Django', dbname, db_type)
     if db_type == "mysql":
         new_database = {
             'ENGINE': 'django.db.backends.mysql',
@@ -158,7 +158,7 @@ def exportDB(dbname, tables, db_type):
 
 
 def createDB(dbname, db_type):
-    logging.debug('Method:createDB, Args:[dbname=%s], Message: Drop and Create DB', dbname)
+    logging.debug('Method:createDB, Args:[dbname=%s,db_type=%s], Message: Drop and Create DB', dbname,db_type)
     if db_type == "mysql":
         cursor.execute("DROP DATABASE IF EXISTS " + dbname)
         cursor.execute("CREATE DATABASE " + dbname)
