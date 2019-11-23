@@ -32,10 +32,7 @@ logging.basicConfig(filename=settings.logging_file_path, level=logging.DEBUG,
 
 
 def get_export_type(db_type):
-    if db_type == "mysql":
         return "sql"
-    else:
-        return "tgz"
 
 
 def randomString(stringLength):

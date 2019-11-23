@@ -4,9 +4,13 @@ venv/
 **/__pycache__/
 __pycache__/
 dbcreater/migrations/*
+mongodb_support/migrations/*
+mysql_support/migrations/*
 dbcreater/edbs/*
 !dbcreater/migrations/__init__.py
 !dbcreater/edbs/README.txt
+!mongodb_support/migrations/__init__.py
+!mysql_support/migrations/__init__.py
 backend.log
 filedownloads/*
 !filedownloads/README.txt
