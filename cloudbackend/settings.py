@@ -69,6 +69,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dbcreater.apps.DbcreaterConfig',
     'dbcreater.templatetags',
+    'mongodb_support.apps.MongodbSupportConfig',
+    'mysql_support.apps.MysqlSupportConfig'
 ]
 
 MIDDLEWARE = [
