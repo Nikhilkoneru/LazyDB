@@ -14,6 +14,10 @@ from django.http import JsonResponse
 import pandas as pd
 from cloudbackend import settings
 from pathlib import Path
+import time
+import shutil
+import tarfile
+
 mysql_status = settings.mysql_status
 mysql_username = settings.mysql_username
 mysql_password = settings.mysql_password
@@ -29,7 +33,7 @@ def get_export_type(db_type):
     if db_type == "mysql":
         return "sql"
     else:
-        return "archive"
+        return "tgz"
 
 
 def save_and_export(email, url, db_type):
@@ -38,6 +42,10 @@ def save_and_export(email, url, db_type):
         dbname = "".join(" ".join(re.findall("[a-zA-Z]+", email.split("@")[0])).split())
         createDB(dbname, db_type)
         connectDBtoDjango(dbname, db_type)
+        if db_type == "mysql":
+            call_command('migrate', 'dbcreater', 'zero', '--database=' + dbname, '--noinput')
+            call_command('makemigrations', '--no-input', '--name', dbname)
+            call_command('migrate', '--database=' + dbname, '--noinput')
         try:
             output = read(url)
             tables_dataframe_list, table_names = output["dataframes"], output["table_names"]
@@ -49,7 +57,8 @@ def save_and_export(email, url, db_type):
                 except Exception as e:
                     logging.debug('Method:save_and_export, Error:%s, Message: Error with csv=%s', e, name)
                     pass
-            exportDB(dbname, tables_dataframe_list, db_type)
+            exportDB(dbname, table_names, db_type)
+            deleteFiles()
             deleteDB(dbname, db_type)
             return JsonResponse({"status": 200, "db_name": dbname, "file_type": get_export_type(db_type)})
         except Exception as e:
@@ -79,8 +88,8 @@ def create_and_save_table(dbname, url, database, csv_df, table_name):
         attrs.update({val.lower(): column_type})
         columns_dic.update({val.lower(): ""})
     dynamic_table = type(table_name, (models.Model,), attrs)
-    call_command('makemigrations', '--name=' + dbname)
-    call_command('migrate', '--database=' + dbname)
+    call_command('makemigrations', '--no-input', '--name', dbname)
+    call_command('migrate', '--database=' + dbname, '--noinput')
     df = csv_df.to_dict(orient='records')
     for val in df:
         model = dynamic_table(**val)
@@ -95,23 +104,24 @@ def read(url):
         table_names = []
         with ZipFile(BytesIO(url_m.read())) as my_zip_file:
             for contained_file in my_zip_file.namelist():
-                try:
-                    csv_df = pandas.read_csv(my_zip_file.open(contained_file))
-                    if not csv_df.empty:
-                        csv_df = csv_df.where(pd.notnull(csv_df), None)
-                        csv_df.columns = [c.lower() for c in csv_df.columns]
-                        result.append(csv_df)
-                        table_names.append("".join(" ".join(re.findall("[a-zA-Z]+", Path(contained_file).stem)).split()))
-                except Exception as e:
-                    pass
+                if not Path(contained_file).stem.startswith('.'):
+                    try:
+                        csv_df = pandas.read_csv(my_zip_file.open(contained_file))
+                        if not csv_df.empty:
+                            csv_df = csv_df.where(pd.notnull(csv_df), None)
+                            csv_df.columns = [c.lower() for c in csv_df.columns]
+                            result.append(csv_df)
+                            table_names.append(
+                                "".join(" ".join(re.findall("[a-zA-Z]+", Path(contained_file).stem)).split()))
+                    except Exception as e:
+                        pass
         return {"dataframes": result, "table_names": table_names}
     else:
         logging.debug('Method:read, Args:[url=%s], Message: CSV File', url)
         csv_df = pandas.read_csv(url)
         csv_df = csv_df.where(pd.notnull(csv_df), None)
         csv_df.columns = [c.lower() for c in csv_df.columns]
-
-        table_name = ["".join(" ".join(re.findall("[a-zA-Z]+",Path(url).stem )).split())]
+        table_name = ["".join(" ".join(re.findall("[a-zA-Z]+", Path(url).stem)).split())]
         return {"dataframes": [csv_df], "table_names": table_name}
 
 
@@ -153,14 +163,21 @@ def exportDB(dbname, tables, db_type):
     logging.debug('Method:exportDB, Args:[dbname=%s], Message: Export DB', dbname)
     if db_type == "mysql":
         file = open(export_file_path + "%s.sql" % dbname, 'w+')
-        p1 = subprocess.Popen(["mysqldump", "-u", mysql_username, "-p" + mysql_password, dbname], stdout=file,
+        p1 = subprocess.Popen(["mysqldump", "-u", mysql_username, "-p" + mysql_password, dbname] + tables, stdout=file,
                               stderr=subprocess.STDOUT)
+        p1.wait()
         p1.communicate()
         file.close()
     else:
-        p1 = subprocess.Popen(
-            ["mongodump", "--db", dbname, "--gzip", "--archive=" + export_file_path + "%s.archive" % dbname])
-        p1.communicate()
+        for t in tables:
+            p1 = subprocess.Popen(
+                ["mongodump", "--db", dbname, "-c", t, "-o" + export_file_path])
+            p1.wait()
+            p1.communicate()
+        path = os.getcwd() + "/" + export_file_path + dbname
+        with tarfile.open(path + ".tgz", "w:gz") as tar:
+            for name in os.listdir(path):
+                tar.add(path + '/' + name)
 
 
 def createDB(dbname, db_type):
@@ -192,4 +209,30 @@ def getDynamicType(type):
         return models.CharField(max_length=1000, blank=True, null=True, default=None)
 
 
+def deleteMigrations():
+    logging.info('Method:deleteMigrations, Message: Deleting')
+    folder = os.getcwd() + '/dbcreater/migrations/'
+    try:
+        shutil.rmtree(folder + '__pycache__/')
+    except Exception as e:
+        pass
+    for the_file in os.listdir(folder):
+        if the_file != "__init__.py":
+            file_path = os.path.join(folder, the_file)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+            except Exception as e:
+                print(e)
 
+
+def deleteFiles():
+    folder = os.getcwd() + '/filedownloads/'
+    for the_file in os.listdir(folder):
+        if the_file != "README.txt":
+            file_path = os.path.join(folder, the_file)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+            except Exception as e:
+                print(e)
