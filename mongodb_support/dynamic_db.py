@@ -207,7 +207,7 @@ def deleteMigrations():
 
 
 def deleteFiles():
-    folder = os.getcwd() + '/filedownloads/'
+    folder = settings.file_downloads_path
     for the_file in os.listdir(folder):
         if the_file != "README.txt":
             file_path = os.path.join(folder, the_file)

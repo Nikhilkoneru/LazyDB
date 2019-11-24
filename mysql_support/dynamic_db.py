@@ -19,6 +19,7 @@ import shutil
 import tarfile
 import random
 import string
+import ssl
 from django.apps import apps
 mysql_status = settings.mysql_status
 mysql_username = settings.mysql_username
@@ -27,6 +28,7 @@ server_url = settings.server_url
 cursor = settings.cursor
 export_file_path = settings.export_file_path
 mango_client = settings.mango_client
+filedownloadpath = settings.file_downloads_path
 logging.basicConfig(filename=settings.logging_file_path, level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(message)s')
 
@@ -113,7 +115,8 @@ def read(url, dbtype):
     if "zip" in url:
         logging.debug('Method:read, Args:[url=%s], Message: ZIP File', url)
         result = []
-        url_m = urllib.request.urlopen(url)
+        context = ssl._create_unverified_context()
+        url_m = urllib.request.urlopen(url,context=context)
         table_names = []
         with ZipFile(BytesIO(url_m.read())) as my_zip_file:
             for contained_file in my_zip_file.namelist():
@@ -221,7 +224,7 @@ def deleteMigrations():
 
 
 def deleteFiles():
-    folder = os.getcwd() + '/filedownloads/'
+    folder = filedownloadpath
     for the_file in os.listdir(folder):
         if the_file != "README.txt":
             file_path = os.path.join(folder, the_file)

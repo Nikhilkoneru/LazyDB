@@ -35,13 +35,15 @@ mysql_username = "diamondnikhil"
 mysql_password = "diamondnikhil"
 
 if PRODUCTION:
-    server_url = "https://35.245.82.106"
+    server_url = "https://lazy-db.tech"
     export_file_path = "var/www/html/LazyDB/dbcreater/edbs/"
     logging_file_path = "var/www/html/LazyDB/backend.log"
+    file_downloads_path = "var/www/html/LazyDB/filedownloads/"
 else:
     server_url = "http://127.0.0.1:8000"
     export_file_path = "dbcreater/edbs/"
     logging_file_path = "backend.log"
+    file_downloads_path = "filedownloads/"
 try:
     db = mysql.connector.connect(
         host="localhost",
