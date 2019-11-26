@@ -19,13 +19,8 @@ import shutil
 import tarfile
 import random
 import string
-mysql_status = settings.mysql_status
-mysql_username = settings.mysql_username
-mysql_password = settings.mysql_password
 server_url = settings.server_url
-cursor = settings.cursor
 export_file_path = settings.export_file_path
-mango_client = settings.mango_client
 logging.basicConfig(filename=settings.logging_file_path, level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(message)s')
 

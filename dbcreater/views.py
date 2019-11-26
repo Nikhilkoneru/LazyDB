@@ -1,6 +1,4 @@
 import json
-
-from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
@@ -10,8 +8,9 @@ import logging
 import requests
 from cloudbackend import settings
 import re
-from mysql_support.dynamic_db import save_and_export as mysql_save_and_support
+from mysql_support.dynamic_db import MysqlSupport
 from mongodb_support.dynamic_db import save_and_export as mongo_save_and_support
+
 server_url = settings.server_url
 media_url = settings.MEDIA_URL
 media_root = settings.MEDIA_ROOT
@@ -40,8 +39,9 @@ def assistant_hook(request):
                     "Method:assistant_hook, Message: POST request, Args: [action=%s, url=%s, email=%s, db=%s]", action,
                     url, email,
                     db)
-                if db=="mysql":
-                    output = json.loads(mysql_save_and_support(email, url, db).content.decode('utf-8'))
+                if db == "mysql":
+                    mysql_support = MysqlSupport()
+                    output = json.loads(mysql_support.save_and_export(email, url, db).content.decode('utf-8'))
                 else:
                     output = json.loads(mongo_save_and_support(email, url, db).content.decode('utf-8'))
                 output_url = "%s/downloads?db=%s.%s" % (server_url, output["db_name"], output["file_type"])
@@ -61,12 +61,11 @@ def assistant_hook(request):
                             safe=False)
 
 
-
 @csrf_exempt
 def index(request):
-        template = loader.get_template('dbcreater/index.html')
-        logging.debug("Method:index, Message: render index page")
-        return HttpResponse(template.render({}, request))
+    template = loader.get_template('dbcreater/index.html')
+    logging.debug("Method:index, Message: render index page")
+    return HttpResponse(template.render({}, request))
 
 
 @csrf_exempt

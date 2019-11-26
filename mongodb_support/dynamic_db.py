@@ -15,31 +15,17 @@ from cloudbackend import settings
 from pathlib import Path
 import shutil
 import tarfile
-import random
-import string
 
-mysql_status = settings.mysql_status
-mysql_username = settings.mysql_username
-mysql_password = settings.mysql_password
+
 server_url = settings.server_url
-cursor = settings.cursor
 export_file_path = settings.export_file_path
-mango_client = settings.mango_client
+mongo_client = settings.mongo_client
+mongo_status = settings.mongodb_status
 logging.basicConfig(filename=settings.logging_file_path, level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(message)s')
 
-
-def get_export_type(db_type):
-        return "tgz"
-
-
-def randomString(stringLength):
-    letters = string.ascii_letters
-    return ''.join(random.choice(letters) for i in range(stringLength))
-
-
 def save_and_export(email, url, db_type):
-    if mysql_status:
+    if mongo_status:
         logging.debug('Method:save_and_export, Args:[email=%s, url=%s, db=%s]', email, url, db_type)
         dbname = "".join(" ".join(re.findall("[a-zA-Z]+", email.split("@")[0])).split())
         connectDBtoDjango(dbname, db_type)
@@ -56,14 +42,14 @@ def save_and_export(email, url, db_type):
                     logging.debug('Method:save_and_export, Error:%s, Message: Error with csv=%s', e, name)
                     pass
 
-            exportDB(dbname, table_names, db_type)
+            exportDB(dbname, table_names)
             deleteFiles()
             deleteDB(dbname, db_type)
-            return JsonResponse({"status": 200, "db_name": dbname, "file_type": get_export_type(db_type)})
+            return JsonResponse({"status": 200, "db_name": dbname, "file_type": "tgz"})
         except Exception as e:
             logging.debug('Method:save_and_export,  Error: %s', e)
             deleteDB(dbname, db_type)
-            return JsonResponse({"status": 400, "db_name": dbname, "file_type": get_export_type(db_type), "error": e})
+            return JsonResponse({"status": 400, "db_name": dbname, "file_type": "tgz", "error": e})
     else:
         logging.debug('Method:save_and_export, output:error, Database Status False')
         return JsonResponse({"status": 400, "output": "error"})
@@ -81,11 +67,9 @@ def create_and_save_table(dbname, url, database, csv_df, table_name):
         db_table = table_name
 
     attrs = OrderedDict({'__module__': 'mongodb_support.models', 'Meta': Meta})
-    columns_dic = OrderedDict()
     for i, val in enumerate(columns):
         column_type = getDynamicType(str(data_types[i]))
         attrs.update({val.lower(): column_type})
-        columns_dic.update({val.lower(): ""})
     dynamic_table = type(table_name, (models.Model,), attrs)
     df = csv_df.to_dict(orient='records')
     for val in df:
@@ -147,23 +131,15 @@ def connectDBtoDjango(dbname, db_type):
     settings.DATABASES[dbname + db_type] = new_database
 
 
-def exportDB(dbname, tables, db_type):
+def exportDB(dbname, tables):
     logging.debug('Method:exportDB, Args:[dbname=%s], Message: Export DB', dbname)
-    if db_type == "mysql":
-        file = open(export_file_path + "%s.sql" % dbname, 'w+')
-        p1 = subprocess.Popen(["mysqldump", "-u", mysql_username, "-p" + mysql_password, dbname] + tables, stdout=file,
-                              stderr=subprocess.STDOUT)
-        p1.wait()
-        p1.communicate()
-        file.close()
-    else:
-        for t in tables:
+    for t in tables:
             p1 = subprocess.Popen(
                 ["mongodump", "--db", dbname, "-c", t, "-o" + export_file_path])
             p1.wait()
             p1.communicate()
-        path = os.getcwd() + "/" + export_file_path + dbname
-        with tarfile.open(path + ".tgz", "w:gz") as tar:
+    path = os.getcwd() + "/" + export_file_path + dbname
+    with tarfile.open(path + ".tgz", "w:gz") as tar:
             for name in os.listdir(path):
                 tar.add(path + '/' + name)
 
@@ -173,7 +149,7 @@ def exportDB(dbname, tables, db_type):
 
 def deleteDB(dbname, db_type):
     logging.debug('Method:deleteDB, Args:[dbname=%s], Message: Delete DB', dbname)
-    mango_client.drop_database(dbname)
+    mongo_client.drop_database(dbname)
     del settings.DATABASES[dbname+db_type]
 
 

@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.template import loader
-from mysql_support.dynamic_db import save_and_export, download_helper
+from mysql_support.dynamic_db import MysqlSupport, download_helper
 import logging
 import requests
 from cloudbackend import settings
@@ -41,7 +41,8 @@ def index(request):
                 filename = fs.save(file.name, file)
                 url = server_url + fs.url(filename)
             logging.debug("Method:index, Message:POST request, Args: [url=%s, email=%s, db=%s]", url, email, db)
-            output = json.loads(save_and_export(email, url, db).content.decode('utf-8'))
+            mysql_support = MysqlSupport()
+            output = json.loads(mysql_support.save_and_export(email, url, db).content.decode('utf-8'))
             # deleteFiles()
             return download_helper(output["db_name"], output["file_type"])
         except Exception as e:

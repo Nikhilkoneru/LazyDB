@@ -44,22 +44,13 @@ else:
     export_file_path = "dbcreater/edbs/"
     logging_file_path = "backend.log"
     file_downloads_path = "filedownloads/"
+
+mongo_client = pymongo.MongoClient()
 try:
-    db = mysql.connector.connect(
-        host="localhost",
-        user=mysql_username,
-        passwd=mysql_password,
-    )
-    mysql_status = True
-    cursor = db.cursor()
-except mysql.connector.errors as error:
-    mysql_status = False
-mango_client = pymongo.MongoClient()
-try:
-    mango_client.server_info()
-    mongodb_status = False
+    mongo_client.server_info()
+    mongodb_status = True
 except pymongo.errors.ServerSelectionTimeoutError as e:
-    mango_client = None
+    mongo_client = None
     mongodb_status = False
 # Application definition
 INSTALLED_APPS = [
