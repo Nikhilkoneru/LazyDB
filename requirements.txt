@@ -2,7 +2,7 @@ cachetools==3.1.1
 certifi==2019.9.11
 chardet==3.0.4
 dataclasses==0.6
-Django==2.2.20
+Django==2.2.22
 django-filter==2.2.0
 djangorestframework==3.11.2
 djongo==1.2.36
